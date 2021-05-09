@@ -1,0 +1,8 @@
+.webixappstart {
+  opacity: 0;
+}
+.webixapp {
+  transition: opacity 500ms;
+  opacity: 1;
+}
+

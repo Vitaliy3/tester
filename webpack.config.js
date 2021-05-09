@@ -10,14 +10,10 @@ module.exports = function(env) {
 	var asmodule = !!(env && env.module === "true");
 	var standalone = !!(env && env.standalone === "true");
 
-	var babelSettings = {
-		extends: path.join(__dirname, '/.babelrc')
-	};
-
 	var config = {
 		mode: production ? "production" : "development",
 		entry: {
-			myapp: "./sources/myapp.js"
+			myapp: "./sources/myapp.ts"
 		},
 		output: {
 			path: path.join(__dirname, "codebase"),
@@ -28,8 +24,8 @@ module.exports = function(env) {
 		module: {
 			rules: [
 				{
-					test: /\.js$/,
-					use: "babel-loader?" + JSON.stringify(babelSettings)
+					test: /\.ts$/,
+					loader: "ts-loader"
 				},
 				{
 					test: /\.(svg|png|jpg|gif)$/,
@@ -43,8 +39,9 @@ module.exports = function(env) {
 		},
 		stats:"minimal",
 		resolve: {
-			extensions: [".js"],
+			extensions: [".ts", ".js"],
 			modules: ["./sources", "node_modules"],
+			mainFields: [ 'main' ],
 			alias:{
 				"jet-views":path.resolve(__dirname, "sources/views"),
 				"jet-locales":path.resolve(__dirname, "sources/locales")
