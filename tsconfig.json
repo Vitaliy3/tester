@@ -11,5 +11,5 @@
     "sourceMap": true,
     "esModuleInterop": true
   },
-  "include": ["sources/**/*.ts"]
+  "include": ["sources/**/*.ts"],
 }

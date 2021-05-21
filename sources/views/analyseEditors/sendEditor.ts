@@ -1,21 +1,18 @@
 import * as webix from 'webix';
-import AnalyseResultsModel, {AnalyseResults} from '../../entities/analyse';
 
-export default class RenameEditor {
+export default class SendEditor {
 	private view: any;
-	private parentView: any;
 	private buttons: {
 		confirm: webix.ui.button
 		cancel: webix.ui.button
 	};
-	private form: webix.ui.form;
 
 	private config(): any {
 		return {
 			view: 'window',
 			id: 'renameWindow',
 			position: 'center',
-			head: 'Переименование файла',
+			head: 'Отправка результатов анализа на почту',
 			modal: true,
 			width: 500,
 			body: {
@@ -31,9 +28,9 @@ export default class RenameEditor {
 										name: 'name',
 										view: 'text',
 										inputHeight: 30,
-										label: 'Название',
+										label: 'Почта',
 										labelWidth: 105,
-										tooltip: 'Название',
+										tooltip: 'Почта',
 										required: true,
 									},
 								],
@@ -45,7 +42,7 @@ export default class RenameEditor {
 							{
 								view: 'button',
 								id: 'confirm',
-								label: 'Сохранить',
+								label: 'Отправить',
 								type: 'form',
 							},
 							{
@@ -61,23 +58,16 @@ export default class RenameEditor {
 		};
 	}
 
-	public setName(name: string): void {
-		;(webix.$$('name') as webix.ui.text).setValue(name);
-	}
-
-	public init(view: any): void {
-		this.parentView = view;
+	public init(): void {
 		this.view = webix.ui(this.config());
 		this.buttons = {
 			confirm: webix.$$('confirm') as webix.ui.button,
 			cancel: webix.$$('cancel') as webix.ui.button,
 		};
-		this.form = webix.$$('renameForm') as webix.ui.form;
 		this.attachEvents();
 	}
 
 	public show(): void {
-		this.setName(this.parentView.getSelectedItem().name);
 		this.view.show();
 	}
 
@@ -87,14 +77,7 @@ export default class RenameEditor {
 
 	private attachEvents(): void {
 		this.buttons.confirm.attachEvent('onItemClick', () => {
-			let formData: any = this.form.getValues();
-
-			let selectedBank: AnalyseResults = this.parentView.getSelectedItem();
-			AnalyseResultsModel.rename(selectedBank.id, formData.name).then((res: AnalyseResults) => {
-				this.parentView.updateItem(selectedBank.id, formData);
-			}).catch((reason: any) => {
-				console.log(reason);
-			});
+			webix.message('Успешно отправлено');
 			this.close();
 		});
 

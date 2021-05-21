@@ -1,7 +1,8 @@
 import * as webix from 'webix';
-import AnalyseResultsModel, {AnalyseResults} from '../../entities/analyse';
+import {JetView} from 'webix-jet';
+import AnalyseResultsModel, {AnalyseResults} from '../entities/analyse';
 
-export default class RenameEditor {
+export default class Editar extends JetView{
 	private view: any;
 	private parentView: any;
 	private buttons: {
@@ -10,7 +11,7 @@ export default class RenameEditor {
 	};
 	private form: webix.ui.form;
 
-	private config(): any {
+	public config(): any {
 		return {
 			view: 'window',
 			id: 'renameWindow',
@@ -65,9 +66,8 @@ export default class RenameEditor {
 		;(webix.$$('name') as webix.ui.text).setValue(name);
 	}
 
-	public init(view: any): void {
-		this.parentView = view;
-		this.view = webix.ui(this.config());
+	public init(y): any {
+		console.log(y)
 		this.buttons = {
 			confirm: webix.$$('confirm') as webix.ui.button,
 			cancel: webix.$$('cancel') as webix.ui.button,
@@ -75,12 +75,6 @@ export default class RenameEditor {
 		this.form = webix.$$('renameForm') as webix.ui.form;
 		this.attachEvents();
 	}
-
-	public show(): void {
-		this.setName(this.parentView.getSelectedItem().name);
-		this.view.show();
-	}
-
 	public close(): void {
 		this.view.destructor();
 	}
@@ -95,11 +89,10 @@ export default class RenameEditor {
 			}).catch((reason: any) => {
 				console.log(reason);
 			});
-			this.close();
 		});
 
 		this.buttons.cancel.attachEvent('onItemClick', () => {
-			this.view.destructor();
+			this.show('../')
 		});
 	}
 }

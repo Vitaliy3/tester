@@ -104,9 +104,9 @@ export default class TopView extends JetView {
       account: this.$$("account") as webix.ui.button,
     }
     ;(this.$$("main") as webix.ui.button).attachEvent("onItemClick", () => {
-      this.show("/top/data")
+      this.show("/top/mainPage")
     })
-    ;(this.$$("account") as webix.ui.button).attachEvent("onItemClick", () => {
+    ;(this.$$("analyse") as webix.ui.button).attachEvent("onItemClick", () => {
       this.show("../top/analyse")
     })
     this.use(plugins.Menu, "top:menu")
