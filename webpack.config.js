@@ -11,6 +11,9 @@ module.exports = function(env) {
 	var standalone = !!(env && env.standalone === "true");
 
 	var config = {
+		node: {
+			fs: 'empty'
+		},
 		mode: production ? "production" : "development",
 		entry: {
 			myapp: "./sources/myapp.ts"

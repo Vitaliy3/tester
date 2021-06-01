@@ -1,4 +1,4 @@
-Webix Jet Demo App
+Webix Jet Demo Myapp
 ===================
 
 ### How to run

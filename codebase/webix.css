@@ -972,7 +972,7 @@ button,
   .webix_accordionitem.vertical.collapsed > .webix_accordionitem_header .webix_accordionitem_button{
       .accIconDown;
   }
-  
+
   .webix_accordionitem.horizontal  > .webix_accordionitem_header .webix_accordionitem_button{
       .accIconLeft;
   }
@@ -1206,7 +1206,7 @@ button,
   line-height: 20px;
   color: #475466;
   font-size: 20px;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
 }
 .webix_arrow_icon:before {
   content: "\F003";
@@ -1680,7 +1680,7 @@ button,
   position: absolute;
   top: 50%;
   right: 2px;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   font-size: 20px;
   width: 24px;
   height: 24px;
@@ -4467,7 +4467,7 @@ body:not(:-moz-handler-blocked) .webix_el_select select {
 }
 .webix_clear_icon:hover::before {
   content: "\F011";
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
 }
 .webix_view input::-ms-clear {
   display: none;
@@ -4672,7 +4672,7 @@ legend.webix_required:after,
 }
 .webix_multicombo_delete::after {
   content: "\F011";
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
 }
 .webix_multilist .webix_list_item {
   white-space: nowrap;
@@ -5805,7 +5805,7 @@ legend.webix_forminput_label_top {
   z-index: 95;
 }
 .webix_progress_icon .webix_progress_state {
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   font-size: 50px;
   position: absolute;
   left: 50%;
@@ -6045,7 +6045,7 @@ legend.webix_forminput_label_top {
 .webix_treemap_reset:before {
   content: "\F011";
   color: #475466;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   font-size: 16px;
   display: block;
   cursor: pointer;
@@ -6553,7 +6553,7 @@ body.webix_print {
 .webix_icon_btn,
 .webix_input_icon {
   display: inline-block;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   font-style: normal;
   font-weight: normal;
   line-height: 1;
@@ -7379,7 +7379,7 @@ body.webix_print {
 .webix_accordionitem .webix_accordionitem_header .webix_accordionitem_button {
   color: #94a1b3;
   background-image: none;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   font-size: 24px;
   text-align: center;
   width: 24px;
@@ -7702,7 +7702,7 @@ body.webix_print {
 .webix_tree_open,
 .webix_tree_close {
   background-image: none;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   font-size: 24px;
   text-align: center;
   color: #94a1b3;
@@ -7717,7 +7717,7 @@ body.webix_print {
 .webix_tree_folder_open,
 .webix_tree_file {
   background-image: none;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   font-size: 20px;
   margin: 0 4px 0 0;
   width: 24px;
@@ -7736,7 +7736,7 @@ body.webix_print {
 .webix_menu-x .webix_list_item .webix_submenu_icon,
 .webix_view.webix_menu .webix_list_item .webix_submenu_icon {
   font-size: 14px;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   width: 6px;
   top: 0;
   margin-left: 0;
@@ -8127,7 +8127,7 @@ div.webix_inp_static,
 }
 .webix_remove_upload .cancel_icon {
   background-image: none;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   font-size: 17px;
   margin: 0;
   height: auto;
@@ -8141,7 +8141,7 @@ div.webix_inp_static,
 }
 .webix_upload_error .error_icon {
   background-image: none;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   font-size: 20px;
   height: auto;
   width: 20px;
@@ -8243,12 +8243,12 @@ div.webix_inp_static,
   color: #94a1b3;
 }
 .webix_custom_checkbox:before {
-  content: "\F013";
-  font-family: "Webix Material Icons";
+  content: "\highlight_off";
+  font-family: "Material Icons";
   cursor: pointer;
 }
 .webix_checkbox_1 .webix_custom_checkbox:before {
-  content: "\F012";
+  content: "\e86c";
 }
 .webix_checkbox_1 .webix_custom_checkbox {
   color: #1ca1c1;
@@ -8268,7 +8268,7 @@ div.webix_inp_static,
   color: #188ba6;
 }
 .webix_el_radio .webix_custom_radio:before {
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   font-size: 24px;
   content: "\F035";
   display: block;
@@ -8326,7 +8326,7 @@ div.webix_inp_static,
   background-image: none;
   width: 24px;
   font-size: 24px;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   color: #94a1b3;
 }
 .webix_cal_prev_button:hover,
@@ -8740,7 +8740,7 @@ div.webix_inp_static,
 .webix_icon,
 .webix_icon_btn,
 .webix_input_icon {
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
 }
 .webix_icon_button {
   position: relative;
@@ -8927,7 +8927,7 @@ textarea.webix_invalid {
   opacity: 1;
   background-image: none;
   text-align: center;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   font-size: 24px;
   color: #ffffff;
   border-radius: 50%;
@@ -8943,7 +8943,7 @@ textarea.webix_invalid {
 .webix_nav_button_side.webix_nav_button_next .webix_nav_button_inner {
   opacity: 1;
   text-align: center;
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   font-size: 48px;
   color: #ffffff;
   background: rgba(0, 0, 0, 0.2);
@@ -9021,7 +9021,7 @@ textarea.webix_invalid {
 }
 /* based on MaterialDesignIcons.com */
 @font-face {
-  font-family: "Webix Material Icons";
+  font-family: "Material Icons";
   src: url("fonts/webixmdi-webfont.woff2") format("woff2"),
     url("fonts/webixmdi-webfont.woff") format("woff");
   font-weight: normal;
@@ -9062,7 +9062,7 @@ textarea.webix_invalid {
   content: "\F011";
 }
 .wxi-checkbox-marked:before {
-  content: "\F012";
+  content: "\F0951";
 }
 .wxi-checkbox-blank:before {
   content: "\F013";

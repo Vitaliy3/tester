@@ -9,7 +9,7 @@ import SendEditor from './analyseEditors/sendEditor';
 import AnalyseResultsModel, {AnalyseResults} from '../entities/analyse';
 import TaskModel, {Task} from '../entities/task';
 
-export default class StartView extends JetView {
+export default class AnalyseView extends JetView {
 	private view: {
 		tableAnalyseResult: webix.ui.datatable
 		tableTasks: webix.ui.datatable
@@ -19,6 +19,7 @@ export default class StartView extends JetView {
 			downloadRaw: webix.ui.button
 			downloadAnalysed: webix.ui.button
 			sendByEmail: webix.ui.button
+			uploader: webix.ui.uploader
 		}
 	};
 
@@ -33,28 +34,37 @@ export default class StartView extends JetView {
 							localId: 'btz',
 							columns: [
 								{
-									id: 'name', header: 'Название', width: 200,
+									id: 'name', header: 'Название', width: 130,
 									fillspace: true
+
 								},
 								{
 									id: 'loadDate',
 									header: 'Дата загрузки',
-									width: 100
+									width: 130,
+									fillspace: true,
+									template: function(date) {
+										return date.loadDate.toGMTString();
+									}
+
+
 								},
 								{
 									id: 'countUsers',
 									header: 'Кол-во тестируемых',
-									width: 80
+									width: 190
 								},
 								{
 									id: 'countTasks',
 									header: 'Кол-во заданий',
-									width: 80
+									width: 160,
+
 								},
 								{
 									id: 'status',
 									header: 'Статус анализа',
-									width: 80
+									width: 150,
+
 								},
 							],
 						},
@@ -84,11 +94,12 @@ export default class StartView extends JetView {
 					cols: [
 						{
 							view: 'uploader',
-							upload: '//docs.webix.com/samples/server/upload',
-							id: 'files',
+							upload: '/loadFile',
+							id: 'uploader',
 							name: 'files',
 							value: 'Загрузить данные',
 							inputWidth: 200,
+							// autosend: false,
 						},
 						{
 							view: 'button',
@@ -96,6 +107,19 @@ export default class StartView extends JetView {
 							value: 'Переименовать файл',
 							inputWidth: 200,
 							disabled: true,
+
+						},
+						{
+							height: 200, width: 200,
+							template: `
+						<form method="post" action="/loadFile" enctype="multipart/form-data">
+\t\t\t\t<p>
+\t\t\t\t\t<label for="avatar"><strong>Avatar*:</strong></label>
+\t\t\t\t\t<input type="file" name="avatar" id="avatar" class="span6">
+\t\t\t\t</p>
+\t\t\t\t<hr>
+\t\t\t\t<input type="submit" value="Upload" class="btn btn-large btn-success">
+\t\t\t</form>`
 						},
 						{
 							view: 'button',
@@ -103,6 +127,7 @@ export default class StartView extends JetView {
 							value: 'Скачать результаты анализа',
 							inputWidth: 200,
 							disabled: true,
+
 						},
 						{
 							view: 'button',
@@ -110,6 +135,7 @@ export default class StartView extends JetView {
 							value: 'Скачать исходные данные',
 							inputWidth: 200,
 							disabled: true,
+
 						},
 						{
 							view: 'button',
@@ -121,7 +147,7 @@ export default class StartView extends JetView {
 						},
 					],
 				},
-				{ $subview: true, popup: true },
+				{$subview: true, popup: true},
 
 			],
 		};
@@ -138,10 +164,13 @@ export default class StartView extends JetView {
 				downloadRaw: this.$$('loadRawBtn') as webix.ui.button,
 				downloadAnalysed: this.$$('downloadResultBtn') as webix.ui.button,
 				sendByEmail: this.$$('sendByEmail') as webix.ui.button,
+				uploader: this.$$('uploader') as webix.ui.uploader
 			},
 		};
+
 		// get data from backend
 		AnalyseResultsModel.getAllBanks().then((data: AnalyseResults[]) => {
+			console.log(data)
 			this.view.tableAnalyseResult.parse(data, 'json');
 		});
 
@@ -149,6 +178,37 @@ export default class StartView extends JetView {
 	}
 
 	public attachEvents(): void {
+		// this.view.buttons.uploader.attachEvent('onBeforeFileAdd', (file: any) => {
+			// if (file.size > 50000000) {
+			// 	webix.message('Масимальный размер файла 50мб');
+			// 	return;
+			// }
+			// console.log(file.type)
+			// if (file.type !== 'docx' || file.type !== 'doc' || file.type !== 'txt') {
+			// 	webix.message('Загружать можно только файлы в текстовом формате');
+			// 	return;
+			// }
+			// let formData = new FormData();
+			// console.log(file);
+			// formData.append('file', file);
+			//
+			// let response =  fetch('/loadFile', {
+			// 	method: 'POST',
+			// 	headers: {
+			// 		'Content-Type': 'multipart/form-data',
+			// 	},
+			// 	body: JSON.stringify(file)
+			// axios.post('/loadFile', formData, {
+			// 	headers: {
+			// 		'Content-Type': 'multipart/form-data',
+			// 		'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+			// 	}
+			// }).then((result) => {
+			// 	console.log(result);
+		// 	(this.view.buttons.uploader as any).send()
+		// });
+
+
 		// resultAnalyse row onItemClick event
 		this.view.tableAnalyseResult.attachEvent('onItemClick', (col: any) => {
 			this.view.buttons.downloadRaw.enable();
@@ -175,9 +235,9 @@ export default class StartView extends JetView {
 			editor.show();
 		});
 
-		this.view.buttons.downloadAnalysed.attachEvent('onItemClick',()=> {
-			this.show('./editors')
-		})
+		this.view.buttons.downloadAnalysed.attachEvent('onItemClick', () => {
+			this.show('./editors');
+		});
 		this.view.tableTasks.attachEvent('onItemClick', (row: any) => {
 			// remove prev chart
 			let prevChart: any = document.querySelector('#chart');
@@ -190,11 +250,11 @@ export default class StartView extends JetView {
 				let chartOptions: any = {
 					series: [
 						{
-							name: 'B+',
+							name: 'Бирнбаум+',
 							data: task.birnbaumPlus,
 						},
 						{
-							name: 'B-',
+							name: 'Бирнбаум-',
 							data: task.birnbaumMinus,
 						},
 						{
@@ -217,7 +277,7 @@ export default class StartView extends JetView {
 						},
 					},
 					stroke: {
-						width: [1, 1, 2, 2],
+						width: [2, 2, 3, 3],
 						curve: 'straight',
 						dashArray: [2, 2, 4, 0],
 					},
@@ -226,23 +286,23 @@ export default class StartView extends JetView {
 						type: 'numeric',
 
 						categories: [
-							-2,
-							-1.75,
-							-1.5,
-							-1.25,
-							-1,
-							-0.75,
-							-0.5,
-							-0.25,
-							0,
-							0.25,
-							0.5,
-							0.75,
-							1,
-							1.25,
-							1.5,
-							1.75,
-							2,
+							// -3,
+							// -1.75,
+							// -1.5,
+							// -1.25,
+							// -1,
+							// -0.75,
+							// -0.5,
+							// -0.25,
+							// 0,
+							// 0.25,
+							// 0.5,
+							// 0.75,
+							// 1,
+							// 1.25,
+							// 1.5,
+							// 1.75,
+							// 2,
 						],
 
 						title: {
