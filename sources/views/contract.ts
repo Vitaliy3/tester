@@ -75,7 +75,10 @@ export default class StartView extends JetView {
 							view: 'text',
 							value: 'Электронный адрес: tester@gmail.com'
 						},
-
+						{
+							view: 'checkbox',
+							labelRight: 'Я согласен с условиями договора'
+						},
 						{
 							margin: 5, cols: [
 								{
@@ -90,14 +93,24 @@ export default class StartView extends JetView {
 									value: 'Скачать договор',
 									css: 'webix_primary',
 									disabled: true,
+									click: function() {
+										fetch('downloadContract').then(response => response.blob())
+											.then(blob => {
+												var url = window.URL.createObjectURL(blob);
+												var a = document.createElement('a');
+												a.href = url;
+												a.download = 'Договор №00033 от 12.06.2021.pdf';
+												document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+												a.click();
+												a.remove();  //afterwards we remove the element again
+											});
+									}
 								},
 							]
 						}
 					]
 				},
-
 			],
-
 		};
 	}
 
@@ -144,5 +157,7 @@ export default class StartView extends JetView {
 				});
 			}
 		});
+
+
 	}
 }

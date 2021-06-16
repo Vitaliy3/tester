@@ -37,13 +37,15 @@ export default class AuthView extends JetView {
 									label: 'Введите логин',
 									labelWidth: 150,
 									name: 'login',
-									required: true
+									required: true,
+									type:"email",
 								},
 								{
 									view: 'text',
 									label: 'Введите пароль',
 									labelWidth: 150,
 									name: 'password',
+									type:"password",
 									required: true
 								},
 								{

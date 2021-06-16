@@ -31,18 +31,27 @@ export default class AccountView extends JetView {
 						{
 							rows: [
 								{
+									view: 'text',
+									name: 'name',
+									label: 'Логин:',
+									width:250,
+									labelWidth:70,
+									value:'vitaliydch@gmail.com',
+									readonly: true,
+								},
+								{
 									view: 'button',
 									localId: 'change_login',
 									value: 'Изменить логин',
-									inputWidth: '200',
+									inputWidth: 250,
 									width: 200,
 
 								},
 								{
 									view: 'button',
 									localId: 'change_password',
-									value: 'Изменить логин',
-									inputWidth: '200',
+									value: 'Изменить пароль',
+									inputWidth: 250,
 									width: 200,
 
 								},
@@ -50,7 +59,7 @@ export default class AccountView extends JetView {
 									view: 'button',
 									localId: 'show_contracts',
 									value: 'Заключенные договора',
-									inputWidth: '200',
+									inputWidth: 250,
 									width: 200,
 
 								},
