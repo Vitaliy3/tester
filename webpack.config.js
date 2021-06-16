@@ -19,7 +19,7 @@ module.exports = function(env) {
 			myapp: "./sources/myapp.ts"
 		},
 		output: {
-			path: path.join(__dirname, "codebase"),
+			path: path.join(__dirname, "../../Projects/src/checker/codebase"),
 			publicPath:"/codebase/",
 			filename: "[name].js",
 			chunkFilename: "[name].bundle.js"

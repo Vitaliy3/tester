@@ -1,3 +1,11 @@
+.webix_menu-x .webix_list_item {
+  background: #f4f5f9;
+  color: #1ca1c1;
+}
+.webix_menu-x .webix_list_item:hover {
+  background: #f4f5f9;
+}
+
 .webixappstart {
   opacity: 0;
 }

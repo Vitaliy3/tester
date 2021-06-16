@@ -1,6 +1,7 @@
 import {JetView, plugins} from 'webix-jet';
 import * as webix from 'webix';
 import {getCookie, reviver} from '../entities/auth';
+import './style.css'
 
 export default class TopView extends JetView {
 	private toolbar: {
@@ -43,6 +44,7 @@ export default class TopView extends JetView {
 				{
 					view: 'menu',
 					id: 'support',
+					css:`menu`,
 					width:130,
 					data: [
 						{
@@ -139,7 +141,7 @@ export default class TopView extends JetView {
 			this.show('contract');
 		});
 		this.toolbar.account.attachEvent('onItemClick', () => {
-			this.show('auth');
+			this.show('account');
 		});
 		this.toolbar.support.attachEvent('onItemClick', () => {
 

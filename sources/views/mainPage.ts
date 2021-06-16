@@ -8,16 +8,16 @@ export default class MainPageView extends JetView {
 	config() {
 		var imagePath = 'https://docs.webix.com/samples/30_comments/common/imgs/';
 		var usersData = [
-			{id: 1, value: 'Corvo Attano', image: imagePath + 'corvo.jpg'},
-			{id: 2, value: 'Daisy Fitzroy', image: imagePath + 'daisy.jpg'},
-			{id: 3, value: 'Glenn Crake', image: imagePath + 'glenn.jpg'},
+			{id: 1, value: 'Vitaliy Domnich', image: imagePath + 'corvo.jpg'},
+			{id: 2, value: 'Anna', image: imagePath + 'daisy.jpg'},
+			{id: 3, value: 'Andrew', image: imagePath + 'glenn.jpg'},
 			{id: 4, value: 'Me', image: imagePath + 'tomek.jpg'},
 			{id: 5, value: 'Leia Organa', image: imagePath + 'leia.jpg'}
 		];
 		var commentsData = [
 			{
 				id: 1,
-				user_id: 1,
+				user_id: 3,
 				date: '2018-06-10 18:45',
 				text: 'Отличное приложение. Спасибо.'
 			},
@@ -39,8 +39,8 @@ export default class MainPageView extends JetView {
 					template: `<div style="text-align:center;font-size:20pt;">TESTER
               <br>
               <div style="font-size: 15pt">
-                Анализириум и выяляем подозрительные тестовые задания 
-                используя актуальные и надежные алгоритмы
+                Проводим статистический анализ и выяляем подозрительные тестовые задания  <br>
+                используя актуальные и надежные алгоритмы анализа
                 </div>
             </div>
 <br>
@@ -54,9 +54,12 @@ export default class MainPageView extends JetView {
 						{
 							cols: [
 								{
-									rows:[
-										{template:`<div style="text-align: center;font-size: 15pt">Пример результата анализа нашим приложением</div>`}
-
+									rows: [
+										{
+											template: `<div style="text-align: center;font-size: 15pt">Пример результата анализа нашим приложением
+															<div style="padding-left: 70px; background-image: url('../../codebase/ex.png');width:800px;height: 600px;background-repeat: no-repeat;background-size: 100%"></div>
+														</div>`
+										}
 
 
 									]

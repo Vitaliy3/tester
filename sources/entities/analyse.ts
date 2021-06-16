@@ -34,7 +34,8 @@ export class AnalyseResults {
 			analyseResult4.set(4, 'Тест по программированию', 'В процессе', new Date(), 485, 35);
 			const analyseResult5: AnalyseResults = new AnalyseResults();
 			analyseResult5.set(5, 'Тестирование сотрудников предприятия', 'Успех', new Date(), 245, 25);
-			res([analyseResult1, analyseResult2, analyseResult3, analyseResult4, analyseResult5]);
+
+			 res([analyseResult1, analyseResult2, analyseResult3, analyseResult4, analyseResult5]);
 		});
 	}
 

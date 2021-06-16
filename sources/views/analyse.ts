@@ -6,8 +6,8 @@ import * as webix from 'webix';
 import axios from 'axios';
 import RenameEditor from './analyseEditors/renameEditor';
 import SendEditor from './analyseEditors/sendEditor';
-import AnalyseResultsModel, {AnalyseResults} from '../entities/analyse';
 import TaskModel, {Task} from '../entities/task';
+import './style.css';
 
 export default class AnalyseView extends JetView {
 	private view: {
@@ -19,7 +19,15 @@ export default class AnalyseView extends JetView {
 			downloadRaw: webix.ui.button
 			downloadAnalysed: webix.ui.button
 			sendByEmail: webix.ui.button
+			request: webix.ui.button
 			uploader: webix.ui.uploader
+			removeTestResult: webix.ui.button
+			finishAnalyse: webix.ui.uploader
+		}
+		checkbox: {
+			checkbox1: webix.ui.checkbox
+			checkbox2: webix.ui.checkbox
+			checkbox3: webix.ui.checkbox
 		}
 	};
 
@@ -39,23 +47,21 @@ export default class AnalyseView extends JetView {
 
 								},
 								{
-									id: 'loadDate',
+									id: 'load_time',
 									header: 'Дата загрузки',
 									width: 130,
 									fillspace: true,
-									template: function(date) {
-										return date.loadDate.toGMTString();
+									template: function(obj) {
+										return new Date(obj.load_time.toString()).toLocaleString();
 									}
-
-
 								},
 								{
-									id: 'countUsers',
+									id: 'count_users',
 									header: 'Кол-во тестируемых',
 									width: 190
 								},
 								{
-									id: 'countTasks',
+									id: 'count_tasks',
 									header: 'Кол-во заданий',
 									width: 160,
 
@@ -76,30 +82,64 @@ export default class AnalyseView extends JetView {
 							columns: [
 								{
 									id: 'id',
-									header: 'Идентификатор задания',
+									header: 'подозрительные задания',
 									fillspace: true,
 								},
 							],
 						},
 						{
-							body: {
-								template: `<div id='chart'></div>`,
-								borderless: true,
-								width: 600,
-							},
+							rows: [
+								{
+									template: `<div id='chart'></div>`,
+									borderless: true,
+									width: 600,
+								},
+								{
+									localId: 'checkbox1',
+									css: 'all1',
+									view: 'checkbox',
+									labelRight: 'хорошее задание',
+									hidden: true,
+								},
+								{
+									localId: 'checkbox2',
+									css: 'all2',
+									view: 'checkbox',
+									labelRight: 'подозрительное задание',
+									hidden: true,
+								},
+								{
+									localId: 'checkbox3',
+									css: 'all3',
+									view: 'checkbox',
+									labelRight: 'негодное задание',
+									hidden: true,
+								},
+								{
+									height: 300,
+									template: ` `
+								}
+							]
 						},
+
 					],
 				},
 				{
 					cols: [
 						{
 							view: 'uploader',
-							upload: '/loadFile',
+							upload: '/Home/LoadFile',
 							id: 'uploader',
 							name: 'files',
-							value: 'Загрузить данные',
+							value: 'Загрузить результат тестирования',
 							inputWidth: 200,
-							// autosend: false,
+							autosend: false,
+						},
+						{
+							view: 'button',
+							id: 'request',
+							value: 'Подать заявку на загрузку результатов тестирования',
+							inputWidth: 250,
 						},
 						{
 							view: 'button',
@@ -108,18 +148,6 @@ export default class AnalyseView extends JetView {
 							inputWidth: 200,
 							disabled: true,
 
-						},
-						{
-							height: 200, width: 200,
-							template: `
-						<form method="post" action="/loadFile" enctype="multipart/form-data">
-\t\t\t\t<p>
-\t\t\t\t\t<label for="avatar"><strong>Avatar*:</strong></label>
-\t\t\t\t\t<input type="file" name="avatar" id="avatar" class="span6">
-\t\t\t\t</p>
-\t\t\t\t<hr>
-\t\t\t\t<input type="submit" value="Upload" class="btn btn-large btn-success">
-\t\t\t</form>`
 						},
 						{
 							view: 'button',
@@ -145,6 +173,22 @@ export default class AnalyseView extends JetView {
 							height: 55,
 							disabled: true,
 						},
+						{
+							view: 'button',
+							localId: 'removeTestResult',
+							value: 'Удалить результат анализа',
+							inputWidth: 200,
+							height: 55,
+							disabled: true,
+						},
+						{
+							view: 'button',
+							localId: 'finishAnalyse',
+							value: 'Завершить анализ',
+							inputWidth: 200,
+							height: 55,
+							disabled: true,
+						},
 					],
 				},
 				{$subview: true, popup: true},
@@ -161,53 +205,92 @@ export default class AnalyseView extends JetView {
 			chart: this.$$('chart') as webix.ui.template,
 			buttons: {
 				rename: this.$$('renameBtn') as webix.ui.button,
+				request: this.$$('request') as webix.ui.button,
 				downloadRaw: this.$$('loadRawBtn') as webix.ui.button,
 				downloadAnalysed: this.$$('downloadResultBtn') as webix.ui.button,
 				sendByEmail: this.$$('sendByEmail') as webix.ui.button,
-				uploader: this.$$('uploader') as webix.ui.uploader
+				uploader: this.$$('uploader') as webix.ui.uploader,
+				removeTestResult: this.$$('removeTestResult') as webix.ui.button,
+				finishAnalyse: this.$$('finishAnalyse') as webix.ui.uploader,
 			},
+			checkbox: {
+				checkbox1: this.$$('checkbox1') as webix.ui.checkbox,
+				checkbox2: this.$$('checkbox2') as webix.ui.checkbox,
+				checkbox3: this.$$('checkbox3') as webix.ui.checkbox,
+			}
 		};
 
 		// get data from backend
-		AnalyseResultsModel.getAllBanks().then((data: AnalyseResults[]) => {
-			console.log(data)
-			this.view.tableAnalyseResult.parse(data, 'json');
-		});
 
+		axios.get('results').then(data => {
+			this.view.tableAnalyseResult.parse(data.data, 'json');
+		});
 		this.attachEvents();
 	}
 
-	public attachEvents(): void {
-		// this.view.buttons.uploader.attachEvent('onBeforeFileAdd', (file: any) => {
-			// if (file.size > 50000000) {
-			// 	webix.message('Масимальный размер файла 50мб');
-			// 	return;
-			// }
-			// console.log(file.type)
-			// if (file.type !== 'docx' || file.type !== 'doc' || file.type !== 'txt') {
-			// 	webix.message('Загружать можно только файлы в текстовом формате');
-			// 	return;
-			// }
-			// let formData = new FormData();
-			// console.log(file);
-			// formData.append('file', file);
-			//
-			// let response =  fetch('/loadFile', {
-			// 	method: 'POST',
-			// 	headers: {
-			// 		'Content-Type': 'multipart/form-data',
-			// 	},
-			// 	body: JSON.stringify(file)
-			// axios.post('/loadFile', formData, {
-			// 	headers: {
-			// 		'Content-Type': 'multipart/form-data',
-			// 		'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
-			// 	}
-			// }).then((result) => {
-			// 	console.log(result);
-		// 	(this.view.buttons.uploader as any).send()
-		// });
+	private UpdateTask(status: number): void {
+		const testResultId: number = this.view.tableAnalyseResult.getSelectedId(false, false);
+		const taskId: number = this.view.tableTasks.getSelectedId(false, false);
 
+		axios.post('updateTask/' + testResultId + '/' + taskId + '/+' + status).then(() => {
+		});
+	}
+
+	public attachEvents(): void {
+		this.view.checkbox.checkbox1.attachEvent('onChange', () => {
+			if (this.view.checkbox.checkbox1.getValue() === '1') {
+				this.view.checkbox.checkbox2.disable();
+				this.view.checkbox.checkbox3.disable();
+			} else {
+				this.view.checkbox.checkbox2.enable();
+				this.view.checkbox.checkbox3.enable();
+			}
+
+			this.UpdateTask(1);
+		});
+		this.view.checkbox.checkbox2.attachEvent('onChange', () => {
+			if (this.view.checkbox.checkbox2.getValue() === '1') {
+				this.view.checkbox.checkbox1.disable();
+				this.view.checkbox.checkbox3.disable();
+			} else {
+				this.view.checkbox.checkbox1.enable();
+				this.view.checkbox.checkbox3.enable();
+			}
+			this.UpdateTask(2);
+
+		});
+		this.view.checkbox.checkbox3.attachEvent('onChange', () => {
+			if (this.view.checkbox.checkbox3.getValue() === '1') {
+				this.view.checkbox.checkbox1.disable();
+				this.view.checkbox.checkbox2.disable();
+			} else {
+				this.view.checkbox.checkbox1.enable();
+				this.view.checkbox.checkbox2.enable();
+			}
+			this.UpdateTask(3);
+		});
+
+		this.view.buttons.uploader.attachEvent('onBeforeFileAdd', (file: any) => {
+			if (file.type !== 'txt') {
+				webix.message('Загружать можно только файлы в текстовом формате');
+				return;
+			}
+
+			// const analyseResult1: AnalyseResults = new AnalyseResults();
+			// analyseResult1.set(1, 'Тест по информатике', 'Успех', new Date(), 25, 8);
+			//
+			// this.view.tableAnalyseResult.parse([analyseResult1], 'json');
+			let reader = new FileReader();
+			reader.readAsText(file.file);
+			reader.onload = () => {
+				axios.post('loadFile', {result: reader.result});
+			};
+			// 	(this.view.buttons.uploader as any).send()
+		});
+
+		this.view.buttons.request.attachEvent('onItemClick', (col: any) => {
+			webix.message('Заявка принята. В течении дня с вами свяжется специалист');
+		});
 
 		// resultAnalyse row onItemClick event
 		this.view.tableAnalyseResult.attachEvent('onItemClick', (col: any) => {
@@ -216,19 +299,21 @@ export default class AnalyseView extends JetView {
 			this.view.buttons.sendByEmail.enable();
 			this.view.buttons.rename.enable();
 
-			TaskModel.getTasksByBankId(col.row).then((data: Task[]) => {
+			axios.get('tasks/' + col.row).then((data) => {
 				this.view.tableTasks.clearAll();
-				this.view.tableTasks.parse(data, 'json');
+				this.view.tableTasks.parse(data.data, 'json');
 			});
 		});
+
 		// rename onItemClick event
-		this.view.buttons.rename.attachEvent('onItemClick', (row: any) => {
+		this.view.buttons.request.attachEvent('onItemClick', (row: any) => {
 			let editor: RenameEditor = new RenameEditor();
 
 			editor.init(this.view.tableAnalyseResult);
 			editor.show();
 		});
-		// sendByEmail onItemClick event
+
+// sendByEmail onItemClick event
 		this.view.buttons.sendByEmail.attachEvent('onItemClick', (row: any) => {
 			let editor: SendEditor = new SendEditor();
 			editor.init();
@@ -239,31 +324,49 @@ export default class AnalyseView extends JetView {
 			this.show('./editors');
 		});
 		this.view.tableTasks.attachEvent('onItemClick', (row: any) => {
-			// remove prev chart
 			let prevChart: any = document.querySelector('#chart');
 			if (prevChart.firstChild) {
 				prevChart.firstChild.remove();
 			}
-			// get new chart
 
-			TaskModel.getChart(row.row).then((task: Task) => {
+// get new chart
+			const testResult: number = this.view.tableAnalyseResult.getSelectedId(false, false);
+			axios.get('chart/' + testResult + '/' + row.row).then((data) => {
+
+				const tasks = data.data;
+				let bp: number[] = [];
+				let bm: number[] = [];
+				let birnbaum: number[] = [];
+				let prep: number[] = [];
+
+				tasks.forEach((e: any) => {
+					bp.push(e.birnbaum + e.sigma);
+					bm.push(e.birnbaum - e.sigma);
+					birnbaum.push(e.birnbaum);
+					prep.push(e.preparedness);
+				});
+				console.log(bp);
+				console.log(bm);
+				console.log(birnbaum);
+				console.log(prep);
+
 				let chartOptions: any = {
 					series: [
 						{
 							name: 'Бирнбаум+',
-							data: task.birnbaumPlus,
+							data: bp
 						},
 						{
 							name: 'Бирнбаум-',
-							data: task.birnbaumMinus,
+							data: bm,
 						},
 						{
 							name: 'Частота',
-							data: task.levelOfPreparadness,
+							data: birnbaum,
 						},
 						{
 							name: 'Вероятность',
-							data: task.executionFrequency,
+							data: prep,
 						},
 					],
 					chart: {
@@ -320,6 +423,25 @@ export default class AnalyseView extends JetView {
 					chartOptions
 				);
 				chart.render();
+
+				;(this.$$('checkbox1') as any).show()
+				;(this.$$('checkbox2') as any).show()
+				;(this.$$('checkbox3') as any).show();
+				this.view.checkbox.checkbox1.setValue('0');
+				this.view.checkbox.checkbox2.setValue('0');
+				this.view.checkbox.checkbox3.setValue('0');
+
+				switch (tasks[0].status) {
+					case 1:
+						this.view.checkbox.checkbox1.setValue('1');
+						break;
+					case 2:
+						this.view.checkbox.checkbox2.setValue('1');
+						break;
+					case 3:
+						this.view.checkbox.checkbox3.setValue('1');
+						break;
+				}
 			});
 		});
 	}
