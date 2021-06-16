@@ -5,28 +5,28 @@ export class Auth {
 	public login: string;
 	public password: string;
 
-	public auth(): boolean {
-		let rights: Map<string, boolean> = new Map();
-		rights.set('main', true);
-		rights.set('aboutMethod', true);
-		rights.set('aboutCompany', true);
-		rights.set('analyse', true);
-		rights.set('contract', true);
-		rights.set('support', true);
-		rights.set('requirements', true);
-		rights.set('chat', true);
-		rights.set('contacts', true);
-		rights.set('account', true);
-
-		let parsedRights = JSON.stringify(rights,replacer);
-		setCookie('rights', parsedRights, {secure: true, 'max-age': 3600});
-		return true;
+	public auth(): Promise<any> {
+		return axios.post('auth').then(() => {
+			let rights: Map<string, boolean> = new Map();
+			rights.set('main', true);
+			rights.set('aboutMethod', true);
+			rights.set('aboutCompany', true);
+			rights.set('analyse', true);
+			rights.set('contract', true);
+			rights.set('support', true);
+			rights.set('requirements', true);
+			rights.set('chat', true);
+			rights.set('contacts', true);
+			rights.set('account', true);
+			let parsedRights = JSON.stringify(rights, replacer);
+			setCookie('rights', parsedRights, {secure: true, 'max-age': 3600});
+		});
 	}
 
-	public deauth(): boolean {
-		deleteCookie('rights');
-		return true;
-
+	public deauth(): Promise<any> {
+		return axios.post('deauth').then(() => {
+			deleteCookie('rights');
+		});
 	}
 }
 

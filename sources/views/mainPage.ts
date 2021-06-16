@@ -1,4 +1,5 @@
 import {data} from 'models/records';
+import TopView, {checkPermissions} from 'views/top';
 import {JetView} from 'webix-jet';
 import * as webix from 'webix';
 
@@ -75,12 +76,13 @@ export default class MainPageView extends JetView {
 							]
 						},
 					]
-				}
-
+				},
 			],
+
 		};
 	}
 
 	init(view): any {
+		checkPermissions(this.app)
 	}
 }

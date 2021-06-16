@@ -1,19 +1,22 @@
-import {JetView, plugins} from 'webix-jet';
+import {IJetApp, JetView, plugins} from 'webix-jet';
 import * as webix from 'webix';
-import {getCookie, reviver} from '../entities/auth';
-import './style.css'
+import {Auth, getCookie, reviver} from '../entities/auth';
+import './style.css';
+
+let toolbar: {
+	main: webix.ui.button
+	contract: webix.ui.button
+	analyse: webix.ui.button
+	support: webix.ui.button
+	contacts: webix.ui.button
+	aboutCompany: webix.ui.button
+	aboutMethod: webix.ui.button
+	account: webix.ui.menu
+	logIn: webix.ui.button
+};
 
 export default class TopView extends JetView {
-	private toolbar: {
-		main: webix.ui.button
-		contract: webix.ui.button
-		analyse: webix.ui.button
-		support: webix.ui.button
-		contacts: webix.ui.button
-		aboutCompany: webix.ui.button
-		aboutMethod: webix.ui.button
-		account: webix.ui.button
-	};
+
 
 	config() {
 		var menu = {
@@ -44,8 +47,8 @@ export default class TopView extends JetView {
 				{
 					view: 'menu',
 					id: 'support',
-					css:`menu`,
-					width:130,
+					css: `menu`,
+					width: 130,
 					data: [
 						{
 							id: '2', value: 'Тех. Поддержка', submenu: [
@@ -76,12 +79,25 @@ export default class TopView extends JetView {
 					align: 'left',
 				},
 				{
+					view: 'menu',
 					localId: 'account',
+					css: `menu`,
+					width: 130,
+					data: [
+						{
+							id: 'lk', value: 'Аккаунт', submenu: [
+								{value: 'Личный кабинет',},
+								{value: 'Выйти',}
+							]
+						},
+					]
+				},
+				{
+					localId: 'logIn',
 					view: 'button',
-					value: 'Аккаунт',
+					value: 'Войти',
 					align: 'left',
-
-
+					hidden: true,
 				},
 			],
 		};
@@ -112,7 +128,7 @@ export default class TopView extends JetView {
 
 
 	init() {
-		this.toolbar = {
+		toolbar = {
 			main: this.$$('main') as webix.ui.button,
 			contract: this.$$('contract') as webix.ui.button,
 			analyse: this.$$('analyse') as webix.ui.button,
@@ -120,52 +136,120 @@ export default class TopView extends JetView {
 			contacts: this.$$('contacts') as webix.ui.button,
 			aboutCompany: this.$$('aboutCompany') as webix.ui.button,
 			aboutMethod: this.$$('aboutMethod') as webix.ui.button,
-			account: this.$$('account') as webix.ui.button,
+			account: this.$$('account') as webix.ui.menu,
+			logIn: this.$$('logIn') as webix.ui.button
 		};
 
 		this.on(this.app, 'onLogIn', () => {
-			this.checkPermissions();
+			checkPermissions(this.app);
+			this.show('mainPage');
 		});
 
 		this.on(this.app, 'onLogOut', () => {
-			this.checkPermissions();
+			let auth: Auth = new Auth();
+			auth.deauth().then(() => {
+				checkPermissions(this.app);
+			});
+		});
+
+		toolbar.logIn.attachEvent('onItemClick', () => {
+			this.show('auth');
 		})
 
 		;(this.$$('main') as webix.ui.button).attachEvent('onItemClick', () => {
 			this.show('mainPage');
 		});
-		this.toolbar.analyse.attachEvent('onItemClick', () => {
+
+		toolbar.analyse.attachEvent('onItemClick', () => {
 			this.show('analyse');
 		})
+
 		;(this.$$('contract') as webix.ui.button).attachEvent('onItemClick', () => {
 			this.show('contract');
 		});
-		this.toolbar.account.attachEvent('onItemClick', () => {
-			this.show('account');
+
+		const sub = toolbar.account.getSubMenu('lk');
+		sub.attachEvent('onItemClick', (id) => {
+			let item = sub.getItem(id);
+			console.log(item.value);
+			switch (item.value) {
+				case 'Личный кабинет':
+					this.show('account');
+					break;
+				case 'Выйти':
+					this.app.callEvent('onLogOut', []);
+
+			}
 		});
-		this.toolbar.support.attachEvent('onItemClick', () => {
+
+
+		toolbar.support.attachEvent('onItemClick', () => {
 
 		});
 		this.use(plugins.Menu, 'top:menu');
 	}
 
-	private checkPermissions(): void {
-		let cookie = getCookie('rights');
-		if (!cookie) {
-			this.toolbar.contract.hide();
-			this.toolbar.analyse.hide();
-			this.toolbar.support.hide();
-			this.toolbar.contacts.hide();
-			this.toolbar.aboutCompany.hide();
-			this.toolbar.aboutMethod.hide();
+
+}
+
+export function checkPermissions(app?: IJetApp, t?: JetView,auth?:boolean): void {
+
+
+	let cookie = getCookie('rights');
+	if (!cookie) {
+		if (toolbar) {
+			if (toolbar.contract) {
+				toolbar.contract.hide();
+			}
+			if (toolbar.analyse) {
+				toolbar.analyse.hide();
+
+			}
+			if (toolbar.support) {
+				toolbar.support.hide();
+			}
+			if (toolbar.contacts) {
+				toolbar.contacts.hide();
+
+			}
+			if (toolbar.aboutCompany) {
+				toolbar.aboutCompany.hide();
+
+			}
+			if (toolbar.aboutMethod) {
+				toolbar.aboutMethod.hide();
+
+			}
+			if (toolbar.account) {
+				toolbar.account.hide();
+			}
+			if (toolbar.logIn) {
+				toolbar.logIn.show();
+			}
+		}
+
+		if (auth){
+			t.show('auth')
 			return;
 		}
-		let rights: Map<string, boolean> = JSON.parse(getCookie('rights'), reviver);
-		rights.forEach((value, key, map) => {
-			let view = this.$$(key) as any;
-			if (view) {
-				view.show();
-			}
-		});
+
+		if (t) {
+			t.app.show('mainPage');
+		} else {
+			app.show('top/mainPage');
+		}
+		return;
 	}
+	if (toolbar.logIn) {
+		toolbar.logIn.hide();
+	}
+
+	let rights: Map<string, boolean> = JSON.parse(getCookie('rights'), reviver);
+	rights.forEach((value, key, map) => {
+		let view = app.$$(key) as any;
+		if (view) {
+			view.show();
+		}
+	});
 }
+

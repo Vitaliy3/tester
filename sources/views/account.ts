@@ -1,5 +1,6 @@
 import {strict} from 'assert';
 import Editar from 'views/editors';
+import {checkPermissions} from 'views/top';
 import {attachEvent, editors} from 'webix';
 import {JetView} from 'webix-jet';
 import ApexCharts from 'apexcharts';
@@ -127,6 +128,7 @@ export default class AccountView extends JetView {
 
 	// инциализация элементов представления
 	init(view) {
+		checkPermissions(this.app,this)
 		this.view = {
 			contracts: this.$$('contracts_list') as webix.ui.list,
 			form: this.$$('contract_info') as webix.ui.form,

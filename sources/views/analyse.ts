@@ -1,4 +1,5 @@
 import Editar from 'views/editors';
+import {checkPermissions} from 'views/top';
 import {attachEvent, editors} from 'webix';
 import {JetView} from 'webix-jet';
 import ApexCharts from 'apexcharts';
@@ -199,6 +200,7 @@ export default class AnalyseView extends JetView {
 
 	// инциализация элементов представления
 	init(view) {
+		checkPermissions(this.app,this)
 		this.view = {
 			tableAnalyseResult: this.$$('btz') as webix.ui.datatable,
 			tableTasks: this.$$('tasks') as webix.ui.datatable,
@@ -238,7 +240,7 @@ export default class AnalyseView extends JetView {
 
 	public attachEvents(): void {
 		this.view.checkbox.checkbox1.attachEvent('onChange', () => {
-			if (this.view.checkbox.checkbox1.getValue() === '1') {
+			if (Number(this.view.checkbox.checkbox1.getValue()) === 1) {
 				this.view.checkbox.checkbox2.disable();
 				this.view.checkbox.checkbox3.disable();
 			} else {
@@ -249,7 +251,7 @@ export default class AnalyseView extends JetView {
 			this.UpdateTask(1);
 		});
 		this.view.checkbox.checkbox2.attachEvent('onChange', () => {
-			if (this.view.checkbox.checkbox2.getValue() === '1') {
+			if (Number(this.view.checkbox.checkbox2.getValue()) === 1) {
 				this.view.checkbox.checkbox1.disable();
 				this.view.checkbox.checkbox3.disable();
 			} else {
@@ -260,7 +262,7 @@ export default class AnalyseView extends JetView {
 
 		});
 		this.view.checkbox.checkbox3.attachEvent('onChange', () => {
-			if (this.view.checkbox.checkbox3.getValue() === '1') {
+			if (Number(this.view.checkbox.checkbox3.getValue()) === 1) {
 				this.view.checkbox.checkbox1.disable();
 				this.view.checkbox.checkbox2.disable();
 			} else {
@@ -345,10 +347,6 @@ export default class AnalyseView extends JetView {
 					birnbaum.push(e.birnbaum);
 					prep.push(e.preparedness);
 				});
-				console.log(bp);
-				console.log(bm);
-				console.log(birnbaum);
-				console.log(prep);
 
 				let chartOptions: any = {
 					series: [
@@ -434,12 +432,18 @@ export default class AnalyseView extends JetView {
 				switch (tasks[0].status) {
 					case 1:
 						this.view.checkbox.checkbox1.setValue('1');
+						this.view.checkbox.checkbox2.disable();
+						this.view.checkbox.checkbox3.disable();
 						break;
 					case 2:
 						this.view.checkbox.checkbox2.setValue('1');
+						this.view.checkbox.checkbox1.disable();
+						this.view.checkbox.checkbox3.disable();
 						break;
 					case 3:
 						this.view.checkbox.checkbox3.setValue('1');
+						this.view.checkbox.checkbox1.disable();
+						this.view.checkbox.checkbox2.disable();
 						break;
 				}
 			});
